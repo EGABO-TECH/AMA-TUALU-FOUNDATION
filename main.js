@@ -158,34 +158,38 @@
   let currentSlide       = 0;
   let autoSlideInterval;
 
-  function goToSlide(index) {
-    testimonialCards.forEach(function (card) { card.classList.remove("active"); });
-    dots.forEach(function (dot) { dot.classList.remove("active"); });
+  if (testimonialCards.length && dots.length) {
+    function goToSlide(index) {
+      if (!testimonialCards[index] || !dots[index]) return;
 
-    testimonialCards[index].classList.add("active");
-    dots[index].classList.add("active");
-    currentSlide = index;
-  }
+      testimonialCards.forEach(function (card) { card.classList.remove("active"); });
+      dots.forEach(function (dot) { dot.classList.remove("active"); });
 
-  dots.forEach(function (dot) {
-    dot.addEventListener("click", function () {
-      const index = parseInt(dot.getAttribute("data-index"), 10);
-      goToSlide(index);
-      resetAutoSlide();
+      testimonialCards[index].classList.add("active");
+      dots[index].classList.add("active");
+      currentSlide = index;
+    }
+
+    dots.forEach(function (dot) {
+      dot.addEventListener("click", function () {
+        const index = parseInt(dot.getAttribute("data-index"), 10);
+        goToSlide(index);
+        resetAutoSlide();
+      });
     });
-  });
 
-  function autoSlide() {
-    const next = (currentSlide + 1) % testimonialCards.length;
-    goToSlide(next);
-  }
+    function autoSlide() {
+      const next = (currentSlide + 1) % testimonialCards.length;
+      goToSlide(next);
+    }
 
-  function resetAutoSlide() {
-    clearInterval(autoSlideInterval);
+    function resetAutoSlide() {
+      clearInterval(autoSlideInterval);
+      autoSlideInterval = setInterval(autoSlide, 5000);
+    }
+
     autoSlideInterval = setInterval(autoSlide, 5000);
   }
-
-  autoSlideInterval = setInterval(autoSlide, 5000);
 
 
   /* ============================================================
@@ -354,37 +358,63 @@
 
 
   /* ---------- CONTACT FORM HANDLING ---------- */
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xrpbwvza";
   const contactForm = document.getElementById("contactForm");
+
   if (contactForm) {
-    contactForm.addEventListener("submit", function (e) {
+    contactForm.setAttribute("action", FORMSPREE_ENDPOINT);
+    contactForm.setAttribute("method", "POST");
+
+    contactForm.addEventListener("submit", async function (e) {
       e.preventDefault();
-      
+
       const submitBtn = this.querySelector('button[type="submit"]');
-      const originalText = submitBtn.textContent;
-      
-      // Visual feedback
+      const originalText = submitBtn ? submitBtn.textContent : "Send Message";
+
+      if (!submitBtn) return;
+
       submitBtn.disabled = true;
       submitBtn.textContent = "Sending...";
       submitBtn.style.opacity = "0.7";
 
-      // Simulate network request
-      setTimeout(() => {
+      try {
+        const formData = new FormData(this);
+        const response = await fetch(FORMSPREE_ENDPOINT, {
+          method: "POST",
+          headers: {
+            Accept: "application/json"
+          },
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error("Formspree request failed.");
+        }
+
         submitBtn.textContent = "Message Sent Successfully!";
         submitBtn.style.backgroundColor = "#2c4a2e";
         submitBtn.style.color = "#fff";
         submitBtn.style.opacity = "1";
-        
-        // Reset form
         this.reset();
-        
-        // Revert button after 3 seconds
+
         setTimeout(() => {
           submitBtn.disabled = false;
           submitBtn.textContent = originalText;
           submitBtn.style.backgroundColor = "";
           submitBtn.style.color = "";
         }, 3000);
-      }, 1500);
+      } catch (error) {
+        console.error("Formspree submission error:", error);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Try Again";
+        submitBtn.style.opacity = "1";
+        submitBtn.style.backgroundColor = "#a33b3b";
+
+        setTimeout(() => {
+          submitBtn.textContent = originalText;
+          submitBtn.style.backgroundColor = "";
+        }, 2500);
+      }
     });
   }
 
