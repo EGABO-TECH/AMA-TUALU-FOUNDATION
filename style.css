@@ -1080,27 +1080,74 @@ ul { list-style: none; }
 /* ---------- MERCHANDISE ---------- */
 .merch-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: minmax(0, 620px);
+  justify-content: center;
+  gap: 0;
 }
 .merch-card {
-  background: #2a2a2a;
-  border-radius: var(--radius-lg);
+  background: #f2f1ef;
+  border-radius: 20px;
   overflow: hidden;
-  transition: transform var(--transition);
+  transition: transform var(--transition), box-shadow var(--transition);
+  border: 1px solid rgba(20, 28, 39, 0.08);
+  box-shadow: 0 12px 24px rgba(18, 23, 31, 0.1);
 }
-.merch-card:hover { transform: translateY(-5px); }
-.merch-card .gallery-img { height: 200px; }
+.merch-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 32px rgba(18, 23, 31, 0.14);
+}
+.merch-card .gallery-img {
+  height: 360px;
+  background: #efefee;
+}
+.merch-hero-img {
+  position: relative;
+  background: linear-gradient(180deg, #f0f0ee 0%, #e9e7e3 100%);
+}
+.merch-hero-img img {
+  object-fit: contain;
+  padding: 1rem 1rem 0.4rem;
+  max-width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.08));
+}
 .merch-info {
-  padding: 1.2rem;
-  text-align: center;
+  background: linear-gradient(180deg, rgba(17, 25, 39, 0.98), rgba(24, 32, 45, 0.98));
+  padding: 1.1rem 1.2rem 1.35rem;
+  text-align: left;
 }
 .merch-info h4 {
   font-family: var(--ff-display);
-  font-size: 1rem;
+  font-size: clamp(1.7rem, 2.5vw, 2.2rem);
   font-weight: 700;
   color: #fff;
-  margin-bottom: 0.2rem;
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.04em;
+}
+.merch-info p {
+  color: rgba(255,255,255,0.72);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  max-width: 520px;
+  margin: 0 0 1rem;
+}
+.btn-amber-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 180px;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #d7a869, #e0ba73);
+  color: #1a2430;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  transition: transform var(--transition), box-shadow var(--transition), filter var(--transition);
+  box-shadow: 0 10px 20px rgba(214, 169, 95, 0.22);
+}
+.btn-amber-sm:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
 }
 
 /* ---------- LEADERSHIP ---------- */
